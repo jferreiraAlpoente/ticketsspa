@@ -1,10 +1,12 @@
 // components/LoginForm.tsx
 
-import React, { useState, FormEvent } from 'react';
+import React, { useState, useContext, FormEvent } from 'react';
 import { useRouter } from 'next/router'; 
 import { login } from '../lib/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import AuthContext from '../contexts/AuthContext';
+
 
 const LoginForm: React.FC = () => {
   const [formData, setFormData] = useState({ username: '', password: '' });
@@ -18,12 +20,14 @@ const LoginForm: React.FC = () => {
   };
 
   const router = useRouter();
-
+  
+  
+  const { setAuthToken } = useContext(AuthContext);
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     try {
-      const response = await login(formData.username, formData.password);
+      const response = await login(formData.username, formData.password, setAuthToken);
       localStorage.setItem('authToken', response.token);
       router.push('/');
     } catch (error) {

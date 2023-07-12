@@ -8,11 +8,11 @@ import { logout } from '../lib/api';
 const NavBar = () => {
   const router = useRouter();
   const { username } = useContext(AuthContext);
-
+  const { setAuthToken } = useContext(AuthContext);
 
   const handleLogout = async () => {
     try {
-      await logout();
+      await logout(setAuthToken);
       router.push('/login');
     } catch (error) {
       console.error('Logout failed:', error);

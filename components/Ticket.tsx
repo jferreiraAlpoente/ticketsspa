@@ -1,8 +1,8 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext} from 'react';
 import AuthContext from '../contexts/AuthContext';
 import { TicketType, CommentType } from '../types';
 import { Comment } from './Comment';
-import { createComment } from '@/lib/api';
+import { createComment, deleteComment } from '@/lib/api';
 import { Form, Button } from 'react-bootstrap';
 import Collapse from 'react-bootstrap/Collapse';
 import styled from 'styled-components';
@@ -30,8 +30,16 @@ const TicketButton = styled(Button)`
   text-align: left;
 `;
 
+const DownloadButton = styled(Button)`
+  display: block;
+  text-align: left;
+  margin-bottom: 10px;
+`;
+
 const StyledBadge = styled(Badge)`
   margin-left: 10px;
+  margin-right: 10px;
+
 `;
 
 const TicketCard = styled(Card)`
@@ -70,6 +78,7 @@ const CommentForm = styled.form`
 const CommentSection = styled(Col)`
   border-left: 1px solid #ddd;
   padding: 15px;
+  flex-grow: 1;
 `;
 
 const InputGroup = styled.div`
@@ -93,6 +102,18 @@ const Icon = styled(FontAwesomeIcon)`
   cursor: pointer;
 `;
 
+const StyledCardText = styled(Card.Text)`
+  overflow-wrap: break-word; /* this ensures that long words/lines don't overflow */
+`;
+
+
+
+function formatText(text: string) {
+  return text
+    .replace(/\n/g, '<br />')
+    .replace(/\t/g, '&emsp;')
+    .replace(/ /g, '&nbsp;');
+}
 
 
 
@@ -129,6 +150,22 @@ export function Ticket({ ticket }: Props) {
     }
   }
 
+    const handleCommentDelete = async (commentId: number) => {
+    await deleteComment(commentId);
+    setComments(comments.filter(comment => comment.id !== commentId));
+  }
+
+
+  const handleFileDownload = (fileRelativeUrl: string, filename: string) => {
+    const absoluteFileUrl = `http://localhost:8000${fileRelativeUrl}`; 
+    const link = document.createElement('a');
+    link.href = absoluteFileUrl;
+    link.target = '_blank';  // Add this line
+    link.download = filename;
+    link.click();
+  };
+
+
     return (
     <TicketContainer>
       <TicketButton
@@ -136,31 +173,29 @@ export function Ticket({ ticket }: Props) {
         aria-controls="example-collapse-text"
         aria-expanded={open}
       >
-        {ticket.title}
         <StyledBadge bg={ticket.status === 'A' ? 'success' : 'danger'}>
           {getStatusLabel(ticket.status)}
         </StyledBadge>
+        {ticket.title}
       </TicketButton>
       <Collapse in={open}>
         <div id="example-collapse-text">
           <TicketCard>
             <Card.Body>
               <Row>
-                <Col>
-                  <Card.Text>
-                    <strong>Created At:</strong> {ticket.created_at}
-                    <br />
-                    <strong>Status:</strong> {getStatusLabel(ticket.status)}
-                    <br />
-                    <strong>Code:</strong> {ticket.code}
-                    <br />
-                    <strong>Body:</strong> {ticket.body}
-                    <br />
-                  </Card.Text>
-                </Col>
-                    <CommentSection>
+                <Col xs={6}>
+                <StyledCardText>
+                  <div dangerouslySetInnerHTML={{ __html: formatText(ticket.body) }} />
+                </StyledCardText>
+              {ticket.attachments && ticket.attachments.map((attachment, index) => (
+    <DownloadButton key={index} onClick={() => handleFileDownload(attachment.file, attachment.filename)}>
+        Download {attachment.filename}
+    </DownloadButton>
+))}
+                </Col >
+                    <CommentSection xs={6}>
                     {comments.map((comment) => (
-                        <Comment key={comment.id} comment={comment} />
+                        <Comment key={comment.id} comment={comment} handleDeleteComment={handleCommentDelete} />
                     ))}
                     <Form onSubmit={handleCommentSubmit}>
                         <InputGroup>

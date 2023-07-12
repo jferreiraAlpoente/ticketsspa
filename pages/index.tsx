@@ -3,8 +3,7 @@ import { useEffect } from 'react';
 import { useContext } from 'react';
 import AuthContext from '../contexts/AuthContext';
 import NavBar from '../components/Navbar';
-import { TicketThreadList } from '../components/TicketThreadList';
-
+import { TicketSection } from '@/components/TicketSection';
 
 const Home = () => {
   const { isAuthenticated, loading } = useContext(AuthContext);
@@ -23,12 +22,10 @@ const Home = () => {
   return (
     <div>
       <NavBar />
-      <h1>Home Page</h1>
-      <div>
-        <TicketThreadList />
-      </div>
+      <h1>Tickets Escola Digital</h1>
+      <TicketSection />
     </div>
-  );
+  ); 
 };
 
 export default Home;

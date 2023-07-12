@@ -1,5 +1,5 @@
 // contexts/AuthContext.tsx
-import { createContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useState, useEffect, ReactNode, Dispatch, SetStateAction } from 'react';
 import { getUserInfo } from '../lib/api';
 
 interface AuthContextType {
@@ -7,6 +7,7 @@ interface AuthContextType {
   username: string | null;
   isAuthenticated: boolean;
   loading: boolean;
+  setAuthToken: Dispatch<SetStateAction<string | null>>;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -14,6 +15,7 @@ const AuthContext = createContext<AuthContextType>({
   username: null,
   isAuthenticated: false,
   loading: false,
+  setAuthToken: () => {},
 });
 
 interface AuthProviderProps {
@@ -24,11 +26,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [userId, setUserId] = useState<number | null>(null); 
   const [username, setUsername] = useState<string | null>(null); 
   const [loading, setLoading] = useState<boolean>(true);
+  const [authToken, setAuthToken] = useState<string | null>(typeof window !== 'undefined' ? localStorage.getItem('authToken') : null);
 
   useEffect(() => {
     const fetchUser = async () => {
-      const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : '';
-      if (token) {
+      if (authToken) {
         try {
           const user = await getUserInfo();
           setUsername(user.username);
@@ -41,12 +43,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
     };
 
     fetchUser();
-  }, []);
+  }, [authToken]);
 
   const isAuthenticated = !!username;
 
   return (
-    <AuthContext.Provider value={{ userId, username, isAuthenticated, loading }}>
+    <AuthContext.Provider value={{ userId, username, isAuthenticated, loading, setAuthToken }}>
       {children}
     </AuthContext.Provider>
   );

@@ -12,6 +12,12 @@ export interface CommentType {
   updated_at: string;
 }
 
+export type AttachmentType = {
+  id: number;
+  file: string; 
+  filename: string;
+};
+
 export interface TicketType {
   id: number;
   title: string;
@@ -24,6 +30,7 @@ export interface TicketType {
   code: string;
   files: string; // Replace with correct type if files is not a string
   comments: CommentType[];
+  attachments: AttachmentType[];
 }
 
 export interface TicketThreadType {
