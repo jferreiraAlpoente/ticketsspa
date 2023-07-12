@@ -23,14 +23,33 @@ const generatePdfContent = (ticket: TicketType): string => {
 // Define the function that prints tickets to a PDF
 export const printToPdf = (tickets: TicketType[]): void => {
   const doc = new jsPDF();
-
+  const pageWidth = doc.internal.pageSize.width;
+  const marginLeft = 20;  // adjust to your needs
+  const marginRight = 20;  // adjust to your needs
+  const maxWidth = pageWidth - marginLeft - marginRight;
+  const pageHeight= doc.internal.pageSize.height;
+  const lineHeight = 10; // line height for the text
+  const bottomMargin = 10;  // adjust to your needs
+  const maxLineWidth = pageWidth - marginLeft - marginRight;
+  
+  let yPos = 20; // initial Y position to start writing content
   tickets.forEach((ticket, index) => {
     const content = generatePdfContent(ticket);
 
-    // Add a new page for each ticket after the first
-    if (index !== 0) doc.addPage();
+    if (index !== 0) {
+      doc.addPage();
+      yPos = 20; // reset the Y position for the new page
+    }
 
-    doc.text(content, 10, 10);
+    const lines = doc.splitTextToSize(content, maxLineWidth);
+    for(let i = 0; i < lines.length; i++) {
+      if(yPos >= pageHeight - bottomMargin) {
+        doc.addPage();
+        yPos = 20; // reset the Y position for the new page
+      }
+      doc.text(lines[i], marginLeft, yPos);
+      yPos += lineHeight;
+    }
   });
 
   doc.save("tickets.pdf");
