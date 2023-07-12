@@ -29,7 +29,7 @@ const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
       <Col>
         <Form.Control 
           type="text"
-          placeholder="Filter threads..."
+          placeholder="Pesquisar:"
           onChange={handleFilterChange}
         />
       </Col>
@@ -42,8 +42,8 @@ const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
       </Col>
       <Col>
         <Form.Select onChange={handleSortChange}>
-          <option value="mostRecent">Most recent</option>
-          <option value="leastRecent">Least recent</option>
+          <option value="mostRecent">Mais recente</option>
+          <option value="leastRecent">Mais antigo</option>
         </Form.Select>
       </Col>
     </Row>

@@ -22,7 +22,7 @@ const NavBar = () => {
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
       <div className="container-fluid d-flex justify-content-between">
-        <a className="navbar-brand" href="/"><img src="/Logo.png" alt="Logo" style={{width:'60px'}} /></a>
+        <a className="navbar-brand" href="/"><img src="/Logo.png" alt="Logo" style={{width:'100px'}} /></a>
         <div className="d-flex align-items-center">
           <span className="navbar-text mx-3">{username}</span>
           <button className="btn btn-light" onClick={handleLogout}>Logout</button>
