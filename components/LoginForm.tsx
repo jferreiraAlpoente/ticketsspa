@@ -23,13 +23,14 @@ const LoginForm: React.FC = () => {
   
   
   const { setAuthToken } = useContext(AuthContext);
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     try {
       const response = await login(formData.username, formData.password, setAuthToken);
       localStorage.setItem('authToken', response.token);
-      router.push('/');
+      await router.push('/');
     } catch (error) {
       console.error('Login failed:', error);
     }
