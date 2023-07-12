@@ -4,6 +4,7 @@ import { useContext } from 'react';
 import AuthContext from '../contexts/AuthContext';
 import NavBar from '../components/Navbar';
 import { TicketSection } from '@/components/TicketSection';
+import styled from 'styled-components';
 
 const Home = () => {
   const { isAuthenticated, loading } = useContext(AuthContext);
@@ -18,12 +19,19 @@ const Home = () => {
   if (loading || !isAuthenticated) {
     return null;
   }
+  const Title = styled.div`
+  margin-top: 15px;
+  width: 100%;
+  margin-left: 22px;
+  color: #3b3939 ;
+
+`;
 
   return (
     <div>
       <NavBar />
-      <h1>Tickets Escola Digital</h1>
-      <TicketSection />
+      <Title><h1>Tickets Kit Escola Digital</h1></Title>
+      <TicketSection/>
     </div>
   ); 
 };
