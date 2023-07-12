@@ -110,7 +110,7 @@ const StyledCardText = styled(Card.Text)`
 
 function formatText(text: string) {
   return text
-    .replace(/\n/g, '<br />')
+    .replace(/\n/g, '<br>')
     .replace(/\t/g, '&emsp;')
     .replace(/ /g, '&nbsp;');
 }
