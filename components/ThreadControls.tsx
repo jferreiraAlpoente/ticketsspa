@@ -2,6 +2,7 @@ import React from 'react';
 import { Form, Row, Col } from 'react-bootstrap';
 import { Button } from 'react-bootstrap';
 import { printToPdf } from '@/lib/pdfGenerator';
+import styled from 'styled-components';
 
 
 type Props = {
@@ -49,8 +50,8 @@ const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
           <option value="leastRecent">Mais antigo</option>
         </Form.Select>
       </Col>
-      <Col>
-        <Button onClick={onExport}>Export to PDF</Button>
+      <Col className='d-flex justify-content-center'>
+        <Button onClick={onExport}>Exportar para PDF</Button>
       </Col>
     </Row>
   );
