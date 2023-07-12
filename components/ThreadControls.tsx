@@ -1,16 +1,19 @@
 import React from 'react';
 import { Form, Row, Col } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
+import { printToPdf } from '@/lib/pdfGenerator';
 
 
 type Props = {
   onFilterChange: (filter: string) => void;
   onStatusChange: (status: string) => void;
   onSortChange: (sort: string) => void;
+  onExport: () => void;
 };
 
 
 
-export function ThreadControls({ onFilterChange, onStatusChange, onSortChange }: Props) {
+export function ThreadControls({ onFilterChange, onStatusChange, onSortChange, onExport}: Props) {
   const handleFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         onFilterChange(event.target.value);
   }
@@ -45,6 +48,9 @@ const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
           <option value="mostRecent">Most recent</option>
           <option value="leastRecent">Least recent</option>
         </Form.Select>
+      </Col>
+      <Col>
+        <Button onClick={onExport}>Export to PDF</Button>
       </Col>
     </Row>
   );

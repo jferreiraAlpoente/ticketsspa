@@ -12,6 +12,8 @@ import styled from 'styled-components';
 type Props = {
   thread: TicketThreadType;
   eventKey: string;
+  selectedTickets: number[];
+  setSelectedTickets: React.Dispatch<React.SetStateAction<number[]>>;
 };
 
 const StyledBadge = styled(Badge)`
@@ -20,9 +22,11 @@ const StyledBadge = styled(Badge)`
 
 `;
 
-export function TicketThread({ thread, eventKey }: Props) {
+export function TicketThread({ thread, eventKey, selectedTickets, setSelectedTickets }: Props) {
   const [open, setOpen] = useState(false);
   const firstTicketTitle = thread.tickets.length > 0 ? thread.tickets[0].title : 'No tickets in this thread';
+
+
    const getStatusLabel = (status: string) => {
     switch (status) {
       case 'A':
@@ -34,39 +38,27 @@ export function TicketThread({ thread, eventKey }: Props) {
     }
   }
 
-  return (
+return (
    <Card>
       <Accordion.Item eventKey={eventKey}>
         <Accordion.Header onClick={() => setOpen(!open)}>
           <StyledBadge bg={thread.status === 'A' ? 'success' : 'danger'}>
           {getStatusLabel(thread.status)}
-        </StyledBadge>
+          </StyledBadge>
           {firstTicketTitle}
         </Accordion.Header>
         <Accordion.Body>
           {thread.tickets.map((ticket) => (
-            <Ticket key={ticket.id} ticket={ticket} />
-          ))}
+  <Ticket 
+    key={ticket.id} 
+    ticket={ticket} 
+    selectedTickets={selectedTickets} 
+    setSelectedTickets={setSelectedTickets} 
+  />
+))}
         </Accordion.Body>
       </Accordion.Item>
     </Card>
   ); 
 }
 
-// export function TicketThread({ thread, eventKey }: Props) {
-//   return (
-//     <Accordion.Item eventKey={eventKey}>
-//       <Accordion.Header>
-//         {thread.thread_code}
-//       </Accordion.Header>
-//       <Accordion.Body>
-//         <Accordion defaultActiveKey="0">
-//           {thread.tickets && thread.tickets.map((ticket, index) => (
-//             // Combine thread eventKey with ticket index to form unique eventKey for nested accordion
-//             <Ticket key={ticket.id} ticket={ticket} />
-//           ))}
-//         </Accordion>
-//       </Accordion.Body>
-//     </Accordion.Item>
-//   );
-// }

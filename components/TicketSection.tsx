@@ -2,13 +2,15 @@ import { TicketThreadList } from './TicketThreadList';
 import { ThreadControls } from './ThreadControls';
 import { useEffect, useState } from 'react';
 import { getTickets } from '@/lib/api';
-import { TicketThreadType } from '@/types';
+import { TicketThreadType, TicketType } from '@/types';
 import { getTicketThreads } from '@/lib/api';
 import Pagination from 'react-bootstrap/Pagination';
+import { printToPdf } from '@/lib/pdfGenerator';
 
 export function TicketSection() {
  const [originalThreads, setOriginalThreads] = useState<TicketThreadType[]>([]);
   const [filteredThreads, setFilteredThreads] = useState<TicketThreadType[]>([]);
+  const [selectedTickets, setSelectedTickets] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const threadsPerPage = 8; 
 
@@ -23,6 +25,20 @@ export function TicketSection() {
 
     fetchThreads();
   }, []);
+
+
+const handleExport = () => {
+   // Create an array of all tickets
+   const allTickets: TicketType[] = [];
+   originalThreads.forEach(thread => {
+     allTickets.push(...thread.tickets);
+   });
+
+   // Filter the selected tickets based on the IDs
+   const selectedTicketsToPrint = allTickets.filter(ticket => selectedTickets.includes(ticket.id));
+
+   printToPdf(selectedTicketsToPrint);
+ };
 
 
   const handleFilterChange = (filter: string) => {
@@ -81,16 +97,16 @@ const handleSortChange = (sort: string) => {
   }
 
 
-    return (
-    <div>
-      <ThreadControls onFilterChange={handleFilterChange} onSortChange={handleSortChange} onStatusChange={handleStatusChange} />
-      <TicketThreadList threads={currentThreads} />
-      <Pagination className="justify-content-center">
-        <Pagination.Prev onClick={() => setCurrentPage(old => Math.max(1, old - 1))} />
-        {items}
-        <Pagination.Next onClick={() => setCurrentPage(old => Math.min(totalPages, old + 1))} />
-      </Pagination>
-    </div>
-  );
+ return (
+ <div>
+   <ThreadControls onFilterChange={handleFilterChange} onSortChange={handleSortChange} onStatusChange={handleStatusChange} onExport={handleExport} />
+   <TicketThreadList threads={currentThreads} selectedTickets={selectedTickets} setSelectedTickets={setSelectedTickets} />
+   <Pagination className="justify-content-center">
+     <Pagination.Prev onClick={() => setCurrentPage(old => Math.max(1, old - 1))} />
+     {items}
+     <Pagination.Next onClick={() => setCurrentPage(old => Math.min(totalPages, old + 1))} />
+   </Pagination>
+ </div>
+);
 }
 

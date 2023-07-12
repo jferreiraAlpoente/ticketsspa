@@ -16,6 +16,8 @@ import { faPaperPlane } from '@fortawesome/free-regular-svg-icons';
 
 type Props = {
   ticket: TicketType;
+   selectedTickets: number[];
+  setSelectedTickets: React.Dispatch<React.SetStateAction<number[]>>;
 };
 
 const TicketContainer = styled.div`
@@ -117,8 +119,7 @@ function formatText(text: string) {
 
 
 
-
-export function Ticket({ ticket }: Props) {
+export function Ticket({ ticket, selectedTickets, setSelectedTickets }: Props) {
   const [open, setOpen] = useState(false);
   const [comments, setComments] = useState<CommentType[]>(ticket.comments || []);
   const { userId } = useContext(AuthContext);
@@ -133,6 +134,15 @@ export function Ticket({ ticket }: Props) {
         return 'Unknown';
     }
   };
+
+  const handleTicketSelection = (id: number) => {
+  setSelectedTickets(prevState => 
+    prevState.includes(id) 
+      ? prevState.filter(ticketId => ticketId !== id)
+      : [...prevState, id]
+  );
+};
+
 
   const [newComment, setNewComment] = useState(''); 
 
@@ -169,10 +179,23 @@ export function Ticket({ ticket }: Props) {
     return (
     <TicketContainer>
       <TicketButton
-        onClick={() => setOpen(!open)}
-        aria-controls="example-collapse-text"
-        aria-expanded={open}
-      >
+  onClick={(event: React.MouseEvent) => {
+    if ((event.target as HTMLInputElement).type !== 'checkbox') {
+      setOpen(!open);
+    }
+  }}
+  aria-controls="example-collapse-text"
+  aria-expanded={open}
+>
+<input 
+  type="checkbox"
+  checked={selectedTickets.includes(ticket.id)}
+  onMouseDown={(event: React.MouseEvent) => {
+    event.stopPropagation();
+    handleTicketSelection(ticket.id);
+  }} 
+/>
+
         <StyledBadge bg={ticket.status === 'A' ? 'success' : 'danger'}>
           {getStatusLabel(ticket.status)}
         </StyledBadge>
