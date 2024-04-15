@@ -24,8 +24,22 @@ const StyledBadge = styled(Badge)`
 
 export function TicketThread({ thread, eventKey, selectedTickets, setSelectedTickets }: Props) {
   const [open, setOpen] = useState(false);
-  const firstTicketTitle = thread.tickets.length > 0 ? thread.tickets[0].title : 'No tickets in this thread';
+  /* const firstTicketTitle = thread.tickets.length > 0 ? thread.tickets[0].title : 'No tickets in this thread'; */
+  const firstTicketInfo = thread.tickets.length > 0 ?
+    {
+      title: thread.tickets[0].title,
+      date: thread.tickets[0].date
+    }
+    : {
+      title: 'No tickets in this thread',
+      date: null
+    };
+  const firstTicketTitle = firstTicketInfo.title;
+  const firstTicketDate = firstTicketInfo.date;
 
+  const formatDate = (dateString: string) => {
+    return dateString.split('T')[0];
+  };
 
    const getStatusLabel = (status: string) => {
     switch (status) {
@@ -45,7 +59,7 @@ return (
           <StyledBadge bg={thread.status === 'A' ? 'success' : 'danger'}>
           {getStatusLabel(thread.status)}
           </StyledBadge>
-          {firstTicketTitle}
+        {firstTicketDate && formatDate(firstTicketDate)} {firstTicketTitle}
         </Accordion.Header>
         <Accordion.Body>
           {thread.tickets.map((ticket) => (

@@ -143,6 +143,10 @@ export function Ticket({ ticket, selectedTickets, setSelectedTickets }: Props) {
   );
 };
 
+  const formatDate = (dateString: string) => {
+    return dateString.split('T')[0];
+  };
+
 
   const [newComment, setNewComment] = useState(''); 
 
@@ -199,7 +203,7 @@ export function Ticket({ ticket, selectedTickets, setSelectedTickets }: Props) {
         <StyledBadge bg={ticket.status === 'A' ? 'success' : 'danger'}>
           {getStatusLabel(ticket.status)}
         </StyledBadge>
-        {ticket.title}
+          {formatDate(ticket.date)} {ticket.title} 
       </TicketButton>
       <Collapse in={open}>
         <div id="example-collapse-text">

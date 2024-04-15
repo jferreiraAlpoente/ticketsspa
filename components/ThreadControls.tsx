@@ -46,8 +46,8 @@ const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
       </Col>
       <Col>
         <Form.Select onChange={handleSortChange}>
-          <option value="mostRecent">Mais recente</option>
           <option value="leastRecent">Mais antigo</option>
+          <option value="mostRecent">Mais recente</option>
         </Form.Select>
       </Col>
       <Col className='d-flex justify-content-center'>
